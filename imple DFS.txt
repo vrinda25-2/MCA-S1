@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_SIZE 100
+
+struct Stack {
+    int items[MAX_SIZE];
+    int top;
+};
+
+struct Queue {
+    int items[MAX_SIZE];
+    int front;
+    int rear;
+};
+
+void enqueue(struct Queue *q, int value);
+int dequeue(struct Queue *q);
+int isEmpty(struct Queue *q);
+
+void push(struct Stack *s, int value);
+int pop(struct Stack *s);
+int isStackEmpty(struct Stack *s);
+
+void DFS(int graph[MAX_SIZE][MAX_SIZE], int vertices, int startVertex);
+void topologicalSort(int graph[MAX_SIZE][MAX_SIZE], int vertices);
+
+int main() {
+    int vertices;
+    printf("Enter the number of vertices in the graph: ");
+    scanf("%d", &vertices);
+
+    int graph[MAX_SIZE][MAX_SIZE];
+    printf("Enter the adjacency matrix:\n");
+    for (int i = 0; i < vertices; i++) {
+        for (int j = 0; j < vertices; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    printf("Depth-First Search (DFS):\n");
+    for (int i = 0; i < vertices; i++) {
+        if (graph[i][i] != 0) {
+            printf("DFS starting from vertex %d:\n", i);
+            DFS(graph, vertices, i);
+        }
+    }
+
+    printf("Topological Sort:\n");
+    topologicalSort(graph, vertices);
+
+    return 0;
+}
+
+void enqueue(struct Queue *q, int value) {
+    // Implementation of enqueue remains the same
+}
+
+int dequeue(struct Queue *q) {
+    // Implementation of dequeue remains the same
+}
+
+int isEmpty(struct Queue *q) {
+    // Implementation of isEmpty remains the same
+}
+
+void push(struct Stack *s, int value) {
+    if (s->top == MAX_SIZE - 1) {
+        printf("Stack overflow.\n");
+    } else {
+        s->top++;
+        s->items[s->top] = value;
+    }
+}
+
+int pop(struct Stack *s) {
+    int item;
+    if (isStackEmpty(s)) {
+        printf("Stack is empty.\n");
+        item = -1;
+    } else {
+        item = s->items[s->top];
+        s->top--;
+    }
+    return item;
+}
+
+int isStackEmpty(struct Stack *s) {
+    return (s->top == -1);
+}
+
+void DFS(int graph[MAX_SIZE][MAX_SIZE], int vertices, int startVertex) {
+    struct Stack s;
+    s.top = -1;
+    int visited[MAX_SIZE] = {0};
+    visited[startVertex] = 1;
+    push(&s, startVertex);
+    while (!isStackEmpty(&s)) {
+        int currentVertex = pop(&s);
+        printf("%d ", currentVertex);
+        for (int i = 0; i < vertices; i++) {
+            if (graph[currentVertex][i] == 1 && !visited[i]) {
+                visited[i] = 1;
+                push(&s, i);
+            }
+        }
+    }
+    printf("\n");
+}
+
+void topologicalSort(int graph[MAX_SIZE][MAX_SIZE], int vertices) {
+    struct Stack s;
+    s.top = -1;
+    int visited[MAX_SIZE] = {0};
+    for (int i = 0; i < vertices; i++) {
+        if (!visited[i]) {
+            topologicalSortUtil(graph, vertices, i, visited, &s);
+        }
+    }
+}
+
+void topologicalSortUtil(int graph[MAX_SIZE][MAX_SIZE], int vertices, int vertex, int visited[MAX_SIZE], struct Stack *s) {
+    visited[vertex] = 1;
+    for (int i = 0; i < vertices; i++) {
+        if (graph[vertex][i] == 1 && !visited[i]) {
+            topologicalSortUtil(graph, vertices, i, visited, s);
+        }
+    }
+    push(s, vertex);
+}

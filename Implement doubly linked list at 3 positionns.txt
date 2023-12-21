@@ -1,0 +1,234 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a node in the doubly linked list
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+
+// Function to create a new node with the given data
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->prev = NULL;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to insert a node at the beginning of the doubly linked list
+void insertAtBeginning(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        newNode->next = *head;
+        (*head)->prev = newNode;
+        *head = newNode;
+    }
+}
+
+// Function to insert a node at the end of the doubly linked list
+void insertAtEnd(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        struct Node* temp = *head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+        newNode->prev = temp;
+    }
+}
+
+// Function to insert a node at a specified position in the doubly linked list
+void insertAtPosition(struct Node** head, int data, int position) {
+    struct Node* newNode = createNode(data);
+
+    if (position <= 0) {
+        printf("Invalid position. Position should be a positive integer.\n");
+        return;
+    }
+
+    if (*head == NULL && position > 1) {
+        printf("Invalid position. List is empty.\n");
+        return;
+    }
+
+    if (position == 1) {
+        newNode->next = *head;
+        if (*head != NULL) {
+            (*head)->prev = newNode;
+        }
+        *head = newNode;
+        return;
+    }
+
+    struct Node* temp = *head;
+    for (int i = 1; i < position - 1; ++i) {
+        if (temp == NULL) {
+            printf("Invalid position. List is not long enough.\n");
+            return;
+        }
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Invalid position. List is not long enough.\n");
+        return;
+    }
+
+    newNode->next = temp->next;
+    newNode->prev = temp;
+    if (temp->next != NULL) {
+        temp->next->prev = newNode;
+    }
+    temp->next = newNode;
+}
+
+// Function to delete a node from the beginning of the doubly linked list
+void deleteFromBeginning(struct Node** head) {
+    if (*head == NULL) {
+        printf("List is empty. Cannot delete from an empty list.\n");
+    } else {
+        struct Node* temp = *head;
+        *head = (*head)->next;
+        if (*head != NULL) {
+            (*head)->prev = NULL;
+        }
+        free(temp);
+    }
+}
+
+// Function to delete a node from the end of the doubly linked list
+void deleteFromEnd(struct Node** head) {
+    if (*head == NULL) {
+        printf("List is empty. Cannot delete from an empty list.\n");
+    } else {
+        struct Node* temp = *head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        if (temp->prev != NULL) {
+            temp->prev->next = NULL;
+        } else {
+            *head = NULL;
+        }
+        free(temp);
+    }
+}
+
+// Function to delete a node from a specified position in the doubly linked list
+void deleteFromPosition(struct Node** head, int position) {
+    if (*head == NULL) {
+        printf("List is empty. Cannot delete from an empty list.\n");
+        return;
+    }
+
+    if (position <= 0) {
+        printf("Invalid position. Position should be a positive integer.\n");
+        return;
+    }
+
+    struct Node* temp = *head;
+
+    if (position == 1) {
+        *head = temp->next;
+        if (*head != NULL) {
+            (*head)->prev = NULL;
+        }
+        free(temp);
+        return;
+    }
+
+    for (int i = 1; i < position; ++i) {
+        if (temp == NULL) {
+            printf("Invalid position. List is not long enough.\n");
+            return;
+        }
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Invalid position. List is not long enough.\n");
+        return;
+    }
+
+    if (temp->prev != NULL) {
+        temp->prev->next = temp->next;
+    } else {
+        *head = temp->next;
+    }
+
+    if (temp->next != NULL) {
+        temp->next->prev = temp->prev;
+    }
+
+    free(temp);
+}
+
+// Function to display the doubly linked list
+void display(struct Node* head) {
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+// Main function to demonstrate the doubly linked list operations
+int main() {
+    struct Node* head = NULL;
+
+    int choice, data, position;
+
+    do {
+        printf("\nDoubly Linked List Menu:\n");
+        printf("1. Insert at the beginning\n");
+        printf("2. Insert at the end\n");
+        printf("3. Insert at any position\n");
+        printf("4. Delete from the beginning\n");
+        printf("5. Delete from the end\n");
+        printf("6. Delete from any position\n");
+        printf("7. Display the list\n");
+        printf("8. Exit\n");
+
+        printf("Enter your choice (1-8): ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter data to insert at the beginning: ");
+                scanf("%d", &data);
+                insertAtBeginning(&head, data);
+                break;
+            case 2:
+                printf("Enter data to insert at the end: ");
+                scanf("%d", &data);
+                insertAtEnd(&head, data);
+                break;
+            case 3:
+                printf("Enter data to insert: ");
+                scanf("%d", &data);
+                printf("Enter position to insert at: ");
+                scanf("%d", &position);
+                insertAtPosition(&head, data, position);
+                break;
+            case 4:
+                deleteFromBeginning(&head);
+                break;
+            case 5:
+                deleteFromEnd(&head);
+                break;
+            case 6:
+                printf("Enter position to delete from: ");
+                scanf("%d", &position);
+                deleteFromPosition(&head, position);
+                break;
+            case 7:
+                printf("Doubly Linked List: ");
+                display(head);
+               

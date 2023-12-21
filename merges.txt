@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+int main() {
+    int n1, n2, n3, i, j, k;
+    printf("\nEnter size of the first array: ");
+    scanf("%d", &n1);
+    int a1[n1];
+    printf("Enter first array elements:\n");
+    for (i = 0; i < n1; i++) {
+        scanf("%d", &a1[i]);
+    }
+    printf("\nEnter size of the second array: ");
+    scanf("%d", &n2);
+    int a2[n2];
+    printf("Enter second array elements:\n");
+    for (i = 0; i < n2; i++) {
+        scanf("%d", &a2[i]);
+    }
+    n3 = n1 + n2;
+    int a3[n3];
+    for (i = 0; i < n1; i++) {
+        a3[i] = a1[i];
+    }
+    for (j = 0; j < n2; j++) {
+        a3[i + j] = a2[j];
+    }
+    for (i = 0; i < n3; i++) {
+        for (j = i + 1; j < n3; j++) {
+            if (a3[i] > a3[j]) {
+                k = a3[i];
+                a3[i] = a3[j];
+                a3[j] = k;
+            }
+        }
+    }
+    printf("\nThe merged and sorted array is:\n");
+    for (i = 0; i < n3; i++) {
+        printf("%d ", a3[i]);
+    }
+
+    return 0;
+}
